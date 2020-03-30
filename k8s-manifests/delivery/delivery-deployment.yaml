@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: delivery-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: delivery
+  template:
+    metadata:
+      labels:
+        app: delivery
+    spec:
+      volumes:
+        - name: ssh-keys
+          secret:
+            secretName: ssh-keys
+        - name: data
+          persistentVolumeClaim:
+            claimName: delivery-data-pv-claim
+        - name: logs
+          emptyDir: {}
+        - name: temp
+          emptyDir: {}
+      containers:
+        - name: tomcat
+          image: craftercms/delivery_tomcat:3.1.5
+          imagePullPolicy: 'Always'
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: ssh-keys
+              mountPath: /opt/crafter/.ssh
+            - name: data
+              mountPath: /opt/crafter/data
+            - name: temp
+              mountPath: /opt/crafter/temp
+            - name: logs
+              mountPath: /opt/crafter/logs
+          env:
+            - name: ES_URL
+              value: https://vpc-staging-craftercms-es-6trp5kmla7zl7gyxgvc47gelhm.eu-west-2.es.amazonaws.com
+            - name: ES_PORT
+              value: '443'
+        - name: deployer
+          image: craftercms/deployer:3.1.5
+          imagePullPolicy: 'Always'
+          ports:
+            - containerPort: 9191
+          volumeMounts:
+            - name: ssh-keys
+              mountPath: /opt/crafter/.ssh
+            - name: data
+              mountPath: /opt/crafter/data
+            - name: temp
+              mountPath: /opt/crafter/temp
+            - name: logs
+              mountPath: /opt/crafter/logs
+          env:
+            - name: ES_URL
+              value: https://vpc-staging-craftercms-es-6trp5kmla7zl7gyxgvc47gelhm.eu-west-2.es.amazonaws.com
+            - name: ES_PORT
+              value: '443'
