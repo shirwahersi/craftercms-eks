@@ -76,10 +76,17 @@ terraform plan
 terraform apply
 ```
 
-###  2.2 Verify Cluster
+### 2.2 Create kubeconfig file:
 
 ```
-kubectl cluster-info --kubeconfig=kubeconfig
+terraform output kubectl_config > ${HOME}/.kube/crafter-eks
+export KUBECONFIG=${HOME}/.kube/crafter-eks
+```
+
+###  2.3 Verify Cluster
+
+```
+kubectl cluster-info
 
 Kubernetes master is running at https://FE0F3397D3C752BCC1D4EF7D60EEC825.yl4.eu-west-2.eks.amazonaws.com
 CoreDNS is running at https://FE0F3397D3C752BCC1D4EF7D60EEC825.yl4.eu-west-2.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
