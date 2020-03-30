@@ -52,7 +52,7 @@ Store secrets into AWS Secret Manager
 ```
 aws secretsmanager create-secret --name /crafter/test/credentials \
     --description "Crafter credentials" \
-    --secret-string file://mycreds.json --region eu-west-2 --profile shirwalab
+    --secret-string file://mycreds.json --region eu-west-2
 ```
 
 Remove secret file from disk.
@@ -71,15 +71,22 @@ cd craftercms-eks/terraform
 
 ```
 cd craftercms-eks/terraform
-terraform init -backend=true -backend-config="bucket=shirwa-lab-terraform-state" -backend-config="key=test/terraform_state" -backend-config="region=eu-west-2"
+terraform init
 terraform plan
 terraform apply
 ```
 
-###  2.2 Verify Cluster
+### 2.2 Create kubeconfig file:
 
 ```
-kubectl cluster-info --kubeconfig=kubeconfig
+terraform output kubectl_config > ${HOME}/.kube/crafter-eks
+export KUBECONFIG=${HOME}/.kube/crafter-eks
+```
+
+###  2.3 Verify Cluster
+
+```
+kubectl cluster-info
 
 Kubernetes master is running at https://FE0F3397D3C752BCC1D4EF7D60EEC825.yl4.eu-west-2.eks.amazonaws.com
 CoreDNS is running at https://FE0F3397D3C752BCC1D4EF7D60EEC825.yl4.eu-west-2.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
@@ -182,7 +189,7 @@ Create ConfigMap containing RDS and Elasticsearch endpoint url
 kubectl create configmap crafter-config \
 --from-literal=MARIADB_HOST=$(terraform output rds_endpoint) \
 --from-literal=ES_URL=https://$(terraform output es_endpoint) \
---from-literal=ES_PORT=443 
+--from-literal=ES_PORT=443
 ```
 
 ### 4.2 Deploy Authoring
