@@ -204,3 +204,10 @@ kubectl apply -f authoring/
 ```
 kubectl apply -f delivery/
 ```
+
+```
+kubectl get pods
+NAME                                    READY   STATUS    RESTARTS   AGE
+authoring-deployment-6cccf489d4-6k8jv   3/3     Running   0          56m
+delivery-deployment-577bdd4fc7-8jkfc    2/2     Running   0          41m
+```
