@@ -52,7 +52,7 @@ Store secrets into AWS Secret Manager
 ```
 aws secretsmanager create-secret --name /crafter/test/credentials \
     --description "Crafter credentials" \
-    --secret-string file://mycreds.json --region eu-west-2 --profile shirwalab
+    --secret-string file://mycreds.json --region eu-west-2
 ```
 
 Remove secret file from disk.
