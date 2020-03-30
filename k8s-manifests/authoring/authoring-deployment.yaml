@@ -39,22 +39,43 @@ spec:
             - name: logs
               mountPath: /opt/crafter/logs
           env:
-            - name: ES_URL
-              value: https://vpc-staging-craftercms-es-6trp5kmla7zl7gyxgvc47gelhm.eu-west-2.es.amazonaws.com
-            - name: ES_PORT
-              value: '443'
             - name: SPRING_PROFILES_ACTIVE
               value: 'crafter.studio.externalDb'
             - name: MARIADB_HOST
-              value: 'staging-craftercms-db.cqectg3mevlo.eu-west-2.rds.amazonaws.com'
+              valueFrom:
+                configMapKeyRef:
+                  name: crafter-config
+                  key: MARIADB_HOST
+            - name: ES_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: crafter-config
+                  key: ES_URL
+            - name: ES_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: crafter-config
+                  key: ES_PORT
             - name: MARIADB_USER
-              value: crafter
+              valueFrom:
+                secretKeyRef:
+                  name: crafter-secrets
+                  key: MARIADB_USER
             - name: MARIADB_PASSWD
-              value: 'Hvu5#d37**'
+              valueFrom:
+                secretKeyRef:
+                  name: crafter-secrets
+                  key: MARIADB_PASSWD
             - name: MARIADB_ROOT_USER
-              value: crafter
+              valueFrom:
+                secretKeyRef:
+                  name: crafter-secrets
+                  key: MARIADB_USER
             - name: MARIADB_ROOT_PASSWD
-              value: 'Hvu5#d37**'
+              valueFrom:
+                secretKeyRef:
+                  name: crafter-secrets
+                  key: MARIADB_PASSWD
         - name: deployer
           image: craftercms/deployer:3.1.5
           imagePullPolicy: 'Always'
@@ -71,9 +92,15 @@ spec:
               mountPath: /opt/crafter/logs
           env:
             - name: ES_URL
-              value: https://vpc-staging-craftercms-es-6trp5kmla7zl7gyxgvc47gelhm.eu-west-2.es.amazonaws.com
+              valueFrom:
+                configMapKeyRef:
+                  name: crafter-config
+                  key: ES_URL
             - name: ES_PORT
-              value: '443'
+              valueFrom:
+                configMapKeyRef:
+                  name: crafter-config
+                  key: ES_PORT
         - name: git-ssh-server
           image: craftercms/git_ssh_server:3.1.5
           imagePullPolicy: 'Always'

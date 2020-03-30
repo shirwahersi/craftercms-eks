@@ -18,7 +18,7 @@ output "config_map_aws_auth" {
   value       = module.eks.config_map_aws_auth
 }
 
-output "this_db_instance_address" {
+output "rds_endpoint" {
   description = "The address of the RDS instance"
   value       = module.rds.this_db_instance_address
 }

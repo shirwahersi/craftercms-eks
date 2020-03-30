@@ -6,7 +6,7 @@ A Terraform module to create Crafter CMS compatible Kubernetes clusters.
 
 # 1. Install Client tools
 
-## 1.1 Download terraform 
+## 1.1 Download terraform
 
 ```
 wget https://releases.hashicorp.com/terraform/0.12.23/terraform_0.12.23_darwin_amd64.zip
@@ -93,7 +93,7 @@ NAME                                         STATUS   ROLES    AGE   VERSION
 ip-172-16-3-103.eu-west-2.compute.internal   Ready    <none>   13m   v1.14.9-eks-1f0ca9
 ```
 
-## 3. kubernetes Addons 
+## 3. kubernetes Addons
 
 ### 3.1  ALB Ingress Controller on Amazon EKS
 
@@ -168,14 +168,32 @@ Delete ssh-secrets directory
 rm -rf ssh-secrets/
 ```
 
-### 4.2 Deploy Authoring 
+Create Database credentials secret
 
 ```
-kubectl apply -f k8s-manifests/authoring/
+kubectl create secret generic crafter-secrets \
+--from-literal=MARIADB_USER=$(aws secretsmanager get-secret-value --secret-id /crafter/test/credentials | jq --raw-output '.SecretString' | jq -r .db_user) \
+--from-literal=MARIADB_PASSWD=$(aws secretsmanager get-secret-value --secret-id /crafter/test/credentials | jq --raw-output '.SecretString' | jq -r .db_password)
 ```
 
-### 4.3 Deploy Authoring 
+Create ConfigMap containing RDS and Elasticsearch endpoint url
 
 ```
-kubectl apply -f k8s-manifests/delivery/
+kubectl create configmap crafter-config \
+--from-literal=MARIADB_HOST=$(terraform output rds_endpoint) \
+--from-literal=ES_URL=https://$(terraform output es_endpoint) \
+--from-literal=ES_PORT=443 
+```
+
+### 4.2 Deploy Authoring
+
+```
+cd ../k8s-manifests
+kubectl apply -f authoring/
+```
+
+### 4.3 Deploy Authoring
+
+```
+kubectl apply -f delivery/
 ```
