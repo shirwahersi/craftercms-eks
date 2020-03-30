@@ -71,7 +71,7 @@ cd craftercms-eks/terraform
 
 ```
 cd craftercms-eks/terraform
-terraform init -backend=true -backend-config="bucket=shirwa-lab-terraform-state" -backend-config="key=test/terraform_state" -backend-config="region=eu-west-2"
+terraform init
 terraform plan
 terraform apply
 ```
