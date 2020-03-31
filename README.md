@@ -166,7 +166,11 @@ EOF
 Create Secret ssh-keys with the files just generated:
 
 ```
-kubectl create secret generic ssh-keys --from-file=ssh-secrets/authorized_keys --from-file=ssh-secrets/id_rsa --from-file=ssh-secrets/id_rsa.pub --from-file=ssh-secrets/config
+kubectl create secret generic ssh-keys \
+--from-file=ssh-secrets/authorized_keys \
+--from-file=ssh-secrets/id_rsa \
+--from-file=ssh-secrets/id_rsa.pub \
+--from-file=ssh-secrets/config
 ```
 
 Delete ssh-secrets directory
@@ -199,7 +203,7 @@ cd ../k8s-manifests
 kubectl apply -f authoring/
 ```
 
-### 4.3 Deploy Authoring
+### 4.3 Deploy Delivery
 
 ```
 kubectl apply -f delivery/
