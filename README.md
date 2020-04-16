@@ -70,7 +70,6 @@ cd craftercms-eks/terraform
 ```
 
 ```
-cd craftercms-eks/terraform
 terraform init
 terraform plan
 terraform apply
